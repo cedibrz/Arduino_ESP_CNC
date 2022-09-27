@@ -41,7 +41,8 @@ const int endSwitchX_2 = 27;  // End Switch
 
 // Schritt Winkel
 const float StepAngle = 1.8;  //In degrees
-const float Rotation = 360;   // Number of degrees for one Rotation
+const float Rotation = 360;
+const float Full_Rotation = Rotation/StepAngle;   // Number of degrees for one Rotation
 
 // Struct für ISR Button
 struct Button {
