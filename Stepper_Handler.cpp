@@ -97,11 +97,14 @@ void moveX(bool dir_Clockwise, float distance, int speedikMS) {
   if (dir_Clockwise) {
     digitalWrite(dirPinX_1, HIGH);
     digitalWrite(dirPinX_2, HIGH);
+    //Serial.printf("Moving in Negativ direction for %f steps and a speed of %i ms\n",distance,speedikMS);
   } else {
     digitalWrite(dirPinX_1, LOW);
     digitalWrite(dirPinX_2, LOW);
+    //Serial.printf("Moving in Positiv direction for %f steps and a speed of %i ms\n",distance,speedikMS);
   }
   //Run just one Step
+  
   for (int x = 0; x < distance; x++) {
     digitalWrite(stepPinX_1, HIGH);
     digitalWrite(stepPinX_2, HIGH);

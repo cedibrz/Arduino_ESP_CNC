@@ -66,11 +66,8 @@ void setup() {
 }
 
 void loop() {
-  //randomRotation();
-  //moveX(0,200);
-  //uint i = 0;
 
-  moveX(POSITIVEDIRECTION, 1000, 1000);
+  //moveX(POSITIVEDIRECTION, 1000, 1000);
   delay(2000);
 
   if (axisX1.homed == false || axisX2.homed == false) {
@@ -78,121 +75,119 @@ void loop() {
     homingX();
   }
 
-  /*
-  while (buttonX1.pressed == false) {
-    moveX1(dirX1, 1, speed);
-    if (buttonX1.pressed) {
-      Serial.println("Done with the fucking rotation");
-      buttonX1.pressed = false;
-      dirX1 = !dirX1;
-    }
-  }
-  */
 
-  // Interrupt Routines
-  /*
-  if (buttonX1.pressed) {
-    Serial.printf("Button X1 has been pressed %u times\n", buttonX1.numberKeyPresses);
-    buttonX1.pressed = false;
-  }
-  
-  if (buttonX2.pressed) {
-    Serial.printf("Button X2 has been pressed %u times\n", buttonX2.numberKeyPresses);
-    buttonX2.pressed = false;
-  }
-  if (buttonY1.pressed) {
-    Serial.printf("Button Y1 has been pressed %u times\n", buttonY1.numberKeyPresses);
-    buttonY1.pressed = false;
-  }
-  */
 }
 
 
 void homingX() {
   //lower the speed
-  int steps = 400;
-  speed = 1000;
+  int steps = 200;
+  speed = 1500;
+
   //First drive a little in Positive direction in case its already homed
-  Serial.println("Move a litte forwards");
+  Serial.println("*********************Homing X-Axis Start*********************");
   moveX(POSITIVEDIRECTION, steps, speed);  // driver one Rotation forward
-  Serial.println("Pause 1s");
-  delay(500);  // Short break
+  delay(500);                              // Short break
 
   //start the actual homing proceder
-  Serial.println("Move Back till Home");
-  while (buttonX1.pressed == false) {
+  while (buttonX1.pressed == false || buttonX2.pressed == false) {
     moveX(NEGATIVEDIRECTION, 1, speed);
     if (buttonX1.pressed) {
-      Serial.println("Done with the fucking rotation");
-      buttonX1.pressed = false;
+      Serial.println("End-Switch X1 triggered");
+      break;
+    } else if (buttonX2.pressed) {
+      Serial.println("End-Switch X2 triggered");
       break;
     }
   }
 
+  //************************************Synchronising************************************
+  // Synchronising X1
+  if (buttonX1.pressed == false) {
+    Serial.println("X1 muss be synchronised");
+    while (buttonX1.pressed == false) {
+      moveX1(NEGATIVEDIRECTION, 1, speed);
+      if (buttonX1.pressed) {
+        Serial.println("End-Switch X1 triggered");
+        buttonX1.pressed = false;
+        break;
+      }
+    }
+  } else {
+    buttonX1.pressed = false;
+  }
+
+  // Synchronising X2
+  if (buttonX2.pressed == false) {
+    Serial.println("X2 muss be synchronised");
+    while (buttonX2.pressed == false) {
+      moveX2(NEGATIVEDIRECTION, 1, speed);
+      if (buttonX2.pressed) {
+        Serial.println("End-Switch X2 triggered");
+        buttonX2.pressed = false;
+        break;
+      }
+    }
+  } else {
+    buttonX2.pressed = false;
+  }
+  //************************************Synchronising************************************
+
   // Move to the front again
-  Serial.println("Move a litte forwards V2");
   moveX(POSITIVEDIRECTION, steps, speed);  // driver one Rotation forward
-  Serial.println("Pause 1s");
-  delay(1000);  // Short break
-  buttonX1.pressed = false; // Reset endswitch just to make sure
+  delay(1000);               // Short break
+  
+  // Reset endswitches just to make sure
+  buttonX1.pressed = false;
+  buttonX2.pressed = false;
 
   // start the homing verification
   int i = 0;
   Serial.println("Homing verification");
 
-  while (buttonX1.pressed == false) {
+  while (buttonX1.pressed == false || buttonX2.pressed == false) {
     moveX(NEGATIVEDIRECTION, 1, speed);
     i++;
     if (buttonX1.pressed) {
       Serial.println("Done with the fucking rotation");
       buttonX1.pressed = false;
+      buttonX2.pressed = false;
+      break;
+    } else if (buttonX2.pressed) {
+      Serial.println("Done with the fucking rotation");
+      buttonX1.pressed = false;
+      buttonX2.pressed = false;
       break;
     }
   }
-  if (i == steps) {
-    Serial.println("*******************");
+
+  if (i >= (steps-Tolerance_Rotation) || i <= (steps+Tolerance_Rotation)) {
+    Serial.println("_______________________");
     Serial.println("Homing Succesful");
-    Serial.println("*******************");
     axisX1.homed = true;
     axisX1.rotation = 0;
     axisX2.homed = true;
     axisX1.rotation = 0;
   } else {
-    Serial.println("*******************");
+    Serial.println("_______________________");
     Serial.println("Homing Failed");
-    Serial.println("*******************");
     axisX1.homed = false;
     axisX2.homed = false;
   }
-  Serial.printf("It made %i steps but it should be 400", i);
+  Serial.printf("It made %i steps but it should be %i\n", i,steps);
+  Serial.println("_______________________");
 
   // Move to the front again
   Serial.println("Move a litte forwards V2");
   moveX(POSITIVEDIRECTION, steps, speed);  // driver one Rotation forward
   Serial.println("Pause 1s");
-  delay(1000);  // Short break
-  buttonX1.pressed = false; // Reset endswitch just to make sure
+  delay(1000);               // Short break
+  buttonX1.pressed = false;  // Reset endswitch just to make sure
 
-  Serial.println("End Homing of X-Axis");
+  Serial.println("*********************Homing X-Axis End*********************");
 }
 
 void homingY() {
-  //lower the speed
-  speed = 1000;
-  //First drive a little in Positive direction in case its already homed
-  moveX(POSITIVEDIRECTION, 200, speed);  // driver one Rotation forward
-
-  delay(500);  // Short break
-
-  //start the actual homing proceder
-  while (buttonX1.pressed == false) {
-    moveX(dirX1, 1, speed);
-    if (buttonX1.pressed) {
-      Serial.println("Done with the fucking rotation");
-      buttonX1.pressed = false;
-      break;
-    }
-  }
 }
 
 

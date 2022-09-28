@@ -43,6 +43,8 @@ const int endSwitchX_2 = 27;  // End Switch
 const float StepAngle = 1.8;  //In degrees
 const float Rotation = 360;
 const float Full_Rotation = Rotation/StepAngle;   // Number of degrees for one Rotation
+const int Tolerance_Rotation = 3;
+const int lead = 8; // mm for full rotation
 
 // Struct für ISR Button
 struct Button {
