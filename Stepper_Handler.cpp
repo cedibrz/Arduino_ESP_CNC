@@ -31,6 +31,7 @@ extern AxisData axisY;
 void moveX1(bool dir_Clockwise, float distance, int speedMikS);  // Moves Axis X1
 void moveX2(bool dir_Clockwise, float distance, int speedMikS);  // Moves Axis X2
 void moveX(bool dir_Clockwise, float distance, int speedikMS);   // Moves Axis X1 & X2
+void moveY(bool dir_Clockwise, float distance, int speedikMS);  // Moves Axis Y
 void randomRotation();                            // Moves Axis X1, x2 & Y1
 void example();                                   // Example for Stepper control
 
@@ -163,4 +164,29 @@ void example() {
   delay(1000);  // One second delay
   Serial.println("Lauft");
   delay(1000);
+}
+
+/** ***************************************************************************
+  @brief  Moves Axis Y
+
+  @note   Moves Axis Y
+
+  @param  bool dir_Clockwise, float distance, int speedMS
+  @retval None
+ *****************************************************************************/
+void moveY(bool dir_Clockwise, float distance, int speedikMS) {
+  // Configure direction
+  if (dir_Clockwise) {
+    digitalWrite(dirPinY, HIGH);
+  } else {
+    digitalWrite(dirPinY, LOW);
+  }
+  //Run just one Step
+  for (int x = 0; x < distance; x++) {
+    digitalWrite(stepPinY, HIGH);
+    delayMicroseconds(speedikMS);
+    digitalWrite(stepPinY, LOW);
+    delayMicroseconds(speedikMS);
+  }
+  digitalWrite(stepPinY, LOW);
 }

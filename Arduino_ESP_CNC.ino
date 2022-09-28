@@ -16,7 +16,7 @@ bool dirY = NEGATIVEDIRECTION;
 // End-Switches
 Button buttonX1 = { endSwitchX_1, 0, false };
 Button buttonX2 = { endSwitchX_2, 0, false };
-Button buttonY1 = { endSwitchY_1, 0, false };
+Button buttonY = { endSwitchY_1, 0, false };
 
 // Axis
 AxisData axisX1 = { false, 0.00, 0.00, POSITIVEDIRECTION };
@@ -57,12 +57,12 @@ void setup() {
   // Configure Inputs (Stepper)
   pinMode(buttonX1.PIN, INPUT_PULLDOWN);
   pinMode(buttonX2.PIN, INPUT_PULLDOWN);
-  pinMode(buttonY1.PIN, INPUT_PULLDOWN);
+  pinMode(buttonY.PIN, INPUT_PULLDOWN);
 
   // Attach Interrupts
   attachInterruptArg(buttonX1.PIN, isr, &buttonX1, RISING);
   attachInterruptArg(buttonX2.PIN, isr, &buttonX2, RISING);
-  attachInterruptArg(buttonY1.PIN, isr, &buttonY1, RISING);
+  attachInterruptArg(buttonY.PIN, isr, &buttonY, RISING);
 }
 
 void loop() {
@@ -74,8 +74,11 @@ void loop() {
     Serial.println("Start Homing of X-Axis");
     homingX();
   }
-
-
+  if (axisY.homed == false) {
+    Serial.println("Start Homing of Y-Axis");
+    homingY();
+  }
+  
 }
 
 
@@ -135,8 +138,8 @@ void homingX() {
 
   // Move to the front again
   moveX(POSITIVEDIRECTION, steps, speed);  // driver one Rotation forward
-  delay(1000);               // Short break
-  
+  delay(1000);                             // Short break
+
   // Reset endswitches just to make sure
   buttonX1.pressed = false;
   buttonX2.pressed = false;
@@ -161,7 +164,7 @@ void homingX() {
     }
   }
 
-  if (i >= (steps-Tolerance_Rotation) || i <= (steps+Tolerance_Rotation)) {
+  if (i >= (steps - Tolerance_Rotation) && i <= (steps + Tolerance_Rotation)) {
     Serial.println("_______________________");
     Serial.println("Homing Succesful");
     axisX1.homed = true;
@@ -174,12 +177,12 @@ void homingX() {
     axisX1.homed = false;
     axisX2.homed = false;
   }
-  Serial.printf("It made %i steps but it should be %i\n", i,steps);
+  Serial.printf("It made %i steps but it should be %i\n", i, steps);
   Serial.println("_______________________");
 
   // Move to the front again
   Serial.println("Move a litte forwards V2");
-  moveX(POSITIVEDIRECTION, steps, speed);  // driver one Rotation forward
+  moveX(POSITIVEDIRECTION, 100, speed);  // driver one Rotation forward
   Serial.println("Pause 1s");
   delay(1000);               // Short break
   buttonX1.pressed = false;  // Reset endswitch just to make sure
@@ -188,6 +191,65 @@ void homingX() {
 }
 
 void homingY() {
+  //lower the speed
+  int steps = 200;
+  speed = 1500;
+
+  //First drive a little in Positive direction in case its already homed
+  Serial.println("*********************Homing Y-Axis Start*********************");
+  moveY(POSITIVEDIRECTION, steps, speed);  // driver one Rotation forward
+  delay(500);                              // Short break
+
+  //start the actual homing proceder
+  while (buttonY.pressed == false) {
+    moveY(NEGATIVEDIRECTION, 1, speed);
+    if (buttonY.pressed) {
+      Serial.println("End-Switch Y triggered");
+      break;
+    }
+  }
+
+  // Move to the front again
+  moveY(POSITIVEDIRECTION, steps, speed);  // driver one Rotation forward
+  delay(1000);                             // Short break
+
+  // Reset endswitches just to make sure
+  buttonY.pressed = false;
+
+  // start the homing verification
+  int i = 0;
+  Serial.println("Homing verification");
+
+  while (buttonY.pressed == false) {
+    moveY(NEGATIVEDIRECTION, 1, speed);
+    i++;
+    if (buttonY.pressed) {
+      buttonY.pressed = false;
+      break;
+    }
+  }
+
+  if (i >= (steps - Tolerance_Rotation) && i <= (steps + Tolerance_Rotation)) {
+    Serial.println("_______________________");
+    Serial.println("Homing Succesful");
+    axisY.homed = true;
+    axisY.rotation = 0;
+  } else {
+    Serial.println("_______________________");
+    Serial.println("Homing Failed");
+    axisY.homed = false;
+  }
+  Serial.printf("It made %i steps but it should be %i\n", i, steps);
+  Serial.println("_______________________");
+
+  // Move to the front again
+  Serial.println("Move a litte forwards V2");
+  moveY(POSITIVEDIRECTION, 100, speed);  // driver one Rotation forward
+  Serial.println("Pause 1s");
+  delay(1000);              // Short break
+  buttonY.pressed = false;  // Reset endswitch just to make sure
+
+  Serial.println("*********************Homing Y-Axis End*********************");
 }
 
 
@@ -214,7 +276,7 @@ void debugEndSwitches(void) {
   Serial.print("endSwitchX_1: ");
   Serial.println(digitalRead(buttonX1.PIN));
   Serial.print("endSwitchY: ");
-  Serial.println(digitalRead(buttonY1.PIN));
+  Serial.println(digitalRead(buttonY.PIN));
   Serial.print("endSwitchX_2: ");
   Serial.println(digitalRead(buttonX2.PIN));
   Serial.println("****************************");
@@ -229,6 +291,6 @@ void BufferDetachInterrupt(void) {
     Serial.println("Interrupts detach!!!");
     detachInterrupt(buttonX1.PIN);
     detachInterrupt(buttonX2.PIN);
-    detachInterrupt(buttonY1.PIN);
+    detachInterrupt(buttonY.PIN);
   }
 }
