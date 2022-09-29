@@ -20,7 +20,7 @@
 /******************************************************************************
    Variables
  *****************************************************************************/
- // Axis
+// Axis
 extern AxisData axisX1;
 extern AxisData axisX2;
 extern AxisData axisY;
@@ -31,9 +31,9 @@ extern AxisData axisY;
 void moveX1(bool dir_Clockwise, float distance, int speedMikS);  // Moves Axis X1
 void moveX2(bool dir_Clockwise, float distance, int speedMikS);  // Moves Axis X2
 void moveX(bool dir_Clockwise, float distance, int speedikMS);   // Moves Axis X1 & X2
-void moveY(bool dir_Clockwise, float distance, int speedikMS);  // Moves Axis Y
-void randomRotation();                            // Moves Axis X1, x2 & Y1
-void example();                                   // Example for Stepper control
+void moveY(bool dir_Clockwise, float distance, int speedikMS);   // Moves Axis Y
+void randomRotation();                                           // Moves Axis X1, x2 & Y1
+void example();                                                  // Example for Stepper control
 
 /** ***************************************************************************
   @brief  Moves Axis X1
@@ -98,14 +98,16 @@ void moveX(bool dir_Clockwise, float distance, int speedikMS) {
   if (dir_Clockwise) {
     digitalWrite(dirPinX_1, HIGH);
     digitalWrite(dirPinX_2, HIGH);
-    //Serial.printf("Moving in Negativ direction for %f steps and a speed of %i ms\n",distance,speedikMS);
+    axisX1.positionMM = axisX1.positionMM + (distancePerSteps * distance);
+    axisX1.rotation = axisX1.rotation + distance;
   } else {
     digitalWrite(dirPinX_1, LOW);
     digitalWrite(dirPinX_2, LOW);
-    //Serial.printf("Moving in Positiv direction for %f steps and a speed of %i ms\n",distance,speedikMS);
+    axisX1.positionMM = axisX1.positionMM - (distancePerSteps * distance);
+    axisX1.rotation = axisX1.rotation - distance;
   }
   //Run just one Step
-  
+
   for (int x = 0; x < distance; x++) {
     digitalWrite(stepPinX_1, HIGH);
     digitalWrite(stepPinX_2, HIGH);

@@ -35,6 +35,7 @@ void moveX1(bool dir_Clockwise, float distance, int speedMikS);  // Moves Axis X
 void moveX2(bool dir_Clockwise, float distance, int speedMikS);  // Moves Axis X2
 void moveX(bool dir_Clockwise, float distance, int speedikMS);   // Moves Axis X1 & X2
 void moveY(bool dir_Clockwise, float distance, int speedikMS);  // Moves Axis Y
+void homingX();
 void randomRotation();                            // Moves Axis X1, x2 & Y1
 void example();                                   // Example for Stepper control
 #endif

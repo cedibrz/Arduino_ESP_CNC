@@ -42,9 +42,16 @@ const int endSwitchX_2 = 27;  // End Switch
 // Schritt Winkel
 const float StepAngle = 1.8;  //In degrees
 const float Rotation = 360;
-const float Full_Rotation = Rotation/StepAngle;   // Number of degrees for one Rotation
+const float Full_Rotation = Rotation / StepAngle;  // Number of degrees for one Rotation
 const int Tolerance_Rotation = 3;
-const int lead = 8; // mm for full rotation
+
+// Distance travelled
+const float lead = 8;  // mm for full rotation
+const float distancePerSteps = lead / Full_Rotation; // mm/steps
+
+// Maximal Distance
+#define MAXDISTANCEX 260
+#define MAXROTATIONSX 6400
 
 // Struct für ISR Button
 struct Button {
@@ -60,6 +67,15 @@ struct AxisData {
   float rotation;
   bool direction;
 };
+
+// State machine parameters
+typedef enum {
+  STATE_INIT,
+  STATE_HOMING_X,
+  STATE_HOMING_Y,
+  STATE_READY,
+  STATE_OFF
+} loop_state_control;  ///< States of the main state machine
 
 
 /******************************************************************************
