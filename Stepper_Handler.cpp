@@ -48,17 +48,32 @@ void moveX(bool dir_Clockwise, float distance, int speedikMS) {
   if (dir_Clockwise) {
     digitalWrite(dirPinX_1, HIGH);
     digitalWrite(dirPinX_2, HIGH);
-    axisX1.positionMM = axisX1.positionMM + (distancePerSteps * distance);
-    axisX1.rotation = axisX1.rotation + distance;
   } else {
     digitalWrite(dirPinX_1, LOW);
     digitalWrite(dirPinX_2, LOW);
-    axisX1.positionMM = axisX1.positionMM - (distancePerSteps * distance);
-    axisX1.rotation = axisX1.rotation - distance;
   }
   //Run just one Step
 
   for (int x = 0; x < distance; x++) {
+    if (dir_Clockwise) {
+      axisX1.positionMM = axisX1.positionMM + (distancePerSteps * 1.00);
+      axisX1.rotation = axisX1.rotation + 1.00;
+      axisX2.positionMM = axisX2.positionMM + (distancePerSteps * 1.00);
+      axisX2.rotation = axisX2.rotation + 1.00;
+    } else {
+      axisX1.positionMM = axisX1.positionMM - (distancePerSteps * 1.00);
+      axisX1.rotation = axisX1.rotation - 1.00;
+      axisX2.positionMM = axisX2.positionMM - (distancePerSteps * 1.00);
+      axisX2.rotation = axisX2.rotation - 1.00;
+    }
+    if (axisX1.positionMM >= MAXDISTANCEX || axisX1.rotation >= MAXROTATIONSX) {
+      Serial.println("To Far can't move more X1");
+      return;
+    } else if (axisX2.positionMM >= MAXDISTANCEX || axisX2.rotation >= MAXROTATIONSX) {
+      Serial.println("To Far can't move more X2");
+      return;
+    }
+
     digitalWrite(stepPinX_1, HIGH);
     digitalWrite(stepPinX_2, HIGH);
     delayMicroseconds(speedikMS);
