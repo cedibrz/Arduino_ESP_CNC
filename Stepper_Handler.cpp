@@ -36,6 +36,66 @@ void randomRotation();                                           // Moves Axis X
 void example();                                                  // Example for Stepper control
 
 /** ***************************************************************************
+  @brief  Moves Axis X1 & X2
+
+  @note   Moves Axis X1 & X3
+
+  @param  bool dir_Clockwise, float distance, int speedMS
+  @retval None
+ *****************************************************************************/
+void moveX(bool dir_Clockwise, float distance, int speedikMS) {
+  // Configure direction
+  if (dir_Clockwise) {
+    digitalWrite(dirPinX_1, HIGH);
+    digitalWrite(dirPinX_2, HIGH);
+    axisX1.positionMM = axisX1.positionMM + (distancePerSteps * distance);
+    axisX1.rotation = axisX1.rotation + distance;
+  } else {
+    digitalWrite(dirPinX_1, LOW);
+    digitalWrite(dirPinX_2, LOW);
+    axisX1.positionMM = axisX1.positionMM - (distancePerSteps * distance);
+    axisX1.rotation = axisX1.rotation - distance;
+  }
+  //Run just one Step
+
+  for (int x = 0; x < distance; x++) {
+    digitalWrite(stepPinX_1, HIGH);
+    digitalWrite(stepPinX_2, HIGH);
+    delayMicroseconds(speedikMS);
+    digitalWrite(stepPinX_1, LOW);
+    digitalWrite(stepPinX_2, LOW);
+    delayMicroseconds(speedikMS);
+  }
+  digitalWrite(stepPinX_1, LOW);
+  digitalWrite(stepPinX_2, LOW);
+}
+
+/** ***************************************************************************
+  @brief  Moves Axis Y
+
+  @note   Moves Axis Y
+
+  @param  bool dir_Clockwise, float distance, int speedMS
+  @retval None
+ *****************************************************************************/
+void moveY(bool dir_Clockwise, float distance, int speedikMS) {
+  // Configure direction
+  if (dir_Clockwise) {
+    digitalWrite(dirPinY, HIGH);
+  } else {
+    digitalWrite(dirPinY, LOW);
+  }
+  //Run just one Step
+  for (int x = 0; x < distance; x++) {
+    digitalWrite(stepPinY, HIGH);
+    delayMicroseconds(speedikMS);
+    digitalWrite(stepPinY, LOW);
+    delayMicroseconds(speedikMS);
+  }
+  digitalWrite(stepPinY, LOW);
+}
+
+/** ***************************************************************************
   @brief  Moves Axis X1
 
   @note   Moves Axis X1
@@ -83,112 +143,4 @@ void moveX2(bool dir_Clockwise, float distance, int speedikMS) {
     delayMicroseconds(speedikMS);
   }
   digitalWrite(stepPinX_2, LOW);
-}
-
-/** ***************************************************************************
-  @brief  Moves Axis X1 & X2
-
-  @note   Moves Axis X1 & X3
-
-  @param  bool dir_Clockwise, float distance, int speedMS
-  @retval None
- *****************************************************************************/
-void moveX(bool dir_Clockwise, float distance, int speedikMS) {
-  // Configure direction
-  if (dir_Clockwise) {
-    digitalWrite(dirPinX_1, HIGH);
-    digitalWrite(dirPinX_2, HIGH);
-    axisX1.positionMM = axisX1.positionMM + (distancePerSteps * distance);
-    axisX1.rotation = axisX1.rotation + distance;
-  } else {
-    digitalWrite(dirPinX_1, LOW);
-    digitalWrite(dirPinX_2, LOW);
-    axisX1.positionMM = axisX1.positionMM - (distancePerSteps * distance);
-    axisX1.rotation = axisX1.rotation - distance;
-  }
-  //Run just one Step
-
-  for (int x = 0; x < distance; x++) {
-    digitalWrite(stepPinX_1, HIGH);
-    digitalWrite(stepPinX_2, HIGH);
-    delayMicroseconds(speedikMS);
-    digitalWrite(stepPinX_1, LOW);
-    digitalWrite(stepPinX_2, LOW);
-    delayMicroseconds(speedikMS);
-  }
-  digitalWrite(stepPinX_1, LOW);
-  digitalWrite(stepPinX_2, LOW);
-}
-
-/** ***************************************************************************
-  @brief  Moves Axis X1, x2 & Y1
-
-  @note   Moves Axis X1, x2 & Y1
-
-  @param  bool dir_Clockwise, float distance
-  @retval None
- *****************************************************************************/
-void randomRotation() {
-  digitalWrite(stepPinX_1, HIGH);
-  digitalWrite(stepPinY, HIGH);
-  digitalWrite(stepPinX_2, HIGH);
-
-  delayMicroseconds(1000);
-
-  digitalWrite(stepPinX_1, LOW);
-  digitalWrite(stepPinY, LOW);
-  digitalWrite(stepPinX_2, LOW);
-}
-
-/** ***************************************************************************
-  @brief  Example for Stepper control
-
-  @note   Can be deleted on a later point
-
-  @param  None
-  @retval None
- *****************************************************************************/
-void example() {
-  digitalWrite(dirPinX_1, HIGH);  // Enables the motor to move in a particular direction
-  digitalWrite(dirPinY, HIGH);    // Enables the motor to move in a particular direction
-  digitalWrite(dirPinX_2, HIGH);  // Enables the motor to move in a particular direction
-  // Makes 200 pulses for making one full cycle rotation
-  for (int x = 0; x < 400; x++) {
-    digitalWrite(stepPinX_1, HIGH);
-    digitalWrite(stepPinY, HIGH);
-    digitalWrite(stepPinX_2, HIGH);
-    delayMicroseconds(1000);
-    digitalWrite(stepPinX_1, LOW);
-    digitalWrite(stepPinY, LOW);
-    digitalWrite(stepPinX_2, LOW);
-    delayMicroseconds(1000);
-  }
-  delay(1000);  // One second delay
-  Serial.println("Lauft");
-  delay(1000);
-}
-
-/** ***************************************************************************
-  @brief  Moves Axis Y
-
-  @note   Moves Axis Y
-
-  @param  bool dir_Clockwise, float distance, int speedMS
-  @retval None
- *****************************************************************************/
-void moveY(bool dir_Clockwise, float distance, int speedikMS) {
-  // Configure direction
-  if (dir_Clockwise) {
-    digitalWrite(dirPinY, HIGH);
-  } else {
-    digitalWrite(dirPinY, LOW);
-  }
-  //Run just one Step
-  for (int x = 0; x < distance; x++) {
-    digitalWrite(stepPinY, HIGH);
-    delayMicroseconds(speedikMS);
-    digitalWrite(stepPinY, LOW);
-    delayMicroseconds(speedikMS);
-  }
-  digitalWrite(stepPinY, LOW);
 }
