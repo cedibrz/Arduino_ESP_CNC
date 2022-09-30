@@ -53,6 +53,9 @@ const float distancePerSteps = lead / Full_Rotation; // mm/steps
 #define MAXDISTANCEX 260
 #define MAXROTATIONSX 6400
 
+#define MAXDISTANCEY 264
+#define MAXROTATIONSY 6600
+
 // Struct für ISR Button
 struct Button {
   const uint8_t PIN;
@@ -74,7 +77,9 @@ typedef enum {
   STATE_HOMING_X,
   STATE_HOMING_Y,
   STATE_READY,
-  STATE_OFF
+  STATE_CENTER,
+  STATE_OFF,
+  STATE_OFF_BUFFER
 } loop_state_control;  ///< States of the main state machine
 
 

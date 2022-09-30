@@ -92,37 +92,47 @@ void loop() {
         Serial.println("Homing Done: ***********************************************************************************************");
         Serial.printf("Rotation X1: %fsteps,\t distance X1: %fmm, Rotation X2: %fsteps,\t distance X2: %fmm\n", axisX1.rotation, axisX1.positionMM, axisX2.rotation, axisX2.positionMM);
         Serial.println("Homing Done: ***********************************************************************************************");
-        state = STATE_READY;
-        speed = 2000; 
+        //state = STATE_READY;
+        state = STATE_OFF;
+        speed = 2000;
       };
 
     case STATE_READY:
       //delay(1000);
       Serial.println("Helloooooo");
       while (buttonX1.pressed == false && buttonX2.pressed == false) {
-        moveX(POSITIVEDIRECTION, 1, 1500);
+        moveX(POSITIVEDIRECTION, 1, 1000);
         //Serial.printf("Rotation X1: %fsteps,\t distance X1: %fmm, Rotation X2: %fsteps,\t distance X2: %fmm\n", axisX1.rotation, axisX1.positionMM, axisX2.rotation, axisX2.positionMM);
         if (buttonX1.pressed || buttonX2.pressed) {
           Serial.println("Home X: End-Switch X1 triggered");
           buttonX1.pressed = false;
           buttonX2.pressed = false;
-          state = STATE_OFF;
+          Serial.printf("Rotation X1: %fsteps,\t distance X1: %fmm, Rotation X2: %fsteps,\t distance X2: %fmm\n", axisX1.rotation, axisX1.positionMM, axisX2.rotation, axisX2.positionMM);
+          state = STATE_CENTER;
           break;
         }
       }
-    case STATE_OFF:;
-  }
+    case STATE_OFF:
+      while (buttonY.pressed == false) {
+        moveY(POSITIVEDIRECTION, 1, 1000);
+        if (buttonY.pressed) {
+          Serial.println("Home Y: End-Switch Y triggered");
+          buttonY.pressed = false;
+          Serial.printf("Rotation Y: %fsteps,\t distance Y: %fmm\n", axisY.rotation, axisY.positionMM);
+          state = STATE_OFF_BUFFER;
+          break;
+        }
+      };
+    case STATE_OFF_BUFFER:
 
-  if (axisY.homed == false) {
-    Serial.println("Home Y: Start Homing of Y-Axis");
-    homingY();
+      ;
   }
 }
 
 
 void homingX() {
   //lower the speed
-  int steps = 200;
+  int steps = 100;
   speed = 1500;
 
   // First drive a little in Positive direction in case its already homed
@@ -234,7 +244,7 @@ void homingX() {
 
 void homingY() {
   //lower the speed
-  int steps = 200;
+  int steps = 100;
   speed = 1500;
 
   //First drive a little in Positive direction in case its already homed
@@ -290,7 +300,7 @@ void homingY() {
   moveY(POSITIVEDIRECTION, 100, speed);  // driver one Rotation forward
   Serial.println("Home Y: Pause 1s");
   delay(1000);  // Short break
-  
+
   // Reset endswitch just to make sure
   buttonY.pressed = false;
 

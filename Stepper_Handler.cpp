@@ -25,6 +25,11 @@ extern AxisData axisX1;
 extern AxisData axisX2;
 extern AxisData axisY;
 
+// Buttons
+extern Button buttonX1;
+extern Button buttonX2;
+extern Button buttonY; 
+
 /******************************************************************************
    Functions
  *****************************************************************************/
@@ -68,9 +73,11 @@ void moveX(bool dir_Clockwise, float distance, int speedikMS) {
     }
     if (axisX1.positionMM >= MAXDISTANCEX || axisX1.rotation >= MAXROTATIONSX) {
       Serial.println("To Far can't move more X1");
+      buttonX1.pressed = true;
       return;
     } else if (axisX2.positionMM >= MAXDISTANCEX || axisX2.rotation >= MAXROTATIONSX) {
       Serial.println("To Far can't move more X2");
+      buttonX2.pressed = true;
       return;
     }
 
@@ -97,9 +104,20 @@ void moveY(bool dir_Clockwise, float distance, int speedikMS) {
   // Configure direction
   if (dir_Clockwise) {
     digitalWrite(dirPinY, HIGH);
+    axisY.positionMM = axisY.positionMM + (distancePerSteps * 1.00);
+    axisY.rotation = axisY.rotation + 1.00;
   } else {
     digitalWrite(dirPinY, LOW);
+    axisY.positionMM = axisY.positionMM - (distancePerSteps * 1.00);
+    axisY.rotation = axisY.rotation - 1.00;
   }
+  
+  if (axisY.positionMM >= MAXDISTANCEY || axisY.rotation >= MAXROTATIONSY) {
+    Serial.println("To Far can't move more Y");
+    buttonY.pressed = true;
+    return;
+  } 
+  
   //Run just one Step
   for (int x = 0; x < distance; x++) {
     digitalWrite(stepPinY, HIGH);
