@@ -70,21 +70,26 @@ void setup() {
 }
 
 void loop() {
-
+  bool done = false;
   switch (state) {
     case STATE_INIT:
+      Serial.println("STATE_INIT");
       delay(1000);
       state = STATE_HOMING_X;
-      ;
+      break;
+
     case STATE_HOMING_X:
+      Serial.println("STATE_HOMING_X");
       if (axisX1.homed == false || axisX2.homed == false) {
         Serial.println("Home X: Start Homing of X-Axis");
         homingX();
       } else {
         state = STATE_HOMING_Y;
-      };
+      }
+      break;
 
     case STATE_HOMING_Y:
+      Serial.println("STATE_HOMING_Y");
       if (axisY.homed == false) {
         Serial.println("Home Y: Start Homing of Y-Axis");
         homingY();
@@ -93,39 +98,40 @@ void loop() {
         Serial.printf("Rotation X1: %fsteps,\t distance X1: %fmm, Rotation X2: %fsteps,\t distance X2: %fmm\n", axisX1.rotation, axisX1.positionMM, axisX2.rotation, axisX2.positionMM);
         Serial.println("Homing Done: ***********************************************************************************************");
         //state = STATE_READY;
-        state = STATE_OFF;
+        state = STATE_CENTER;
         speed = 2000;
       };
+      break;
+
+    case STATE_CENTER:
+      Serial.println("STATE_CENTER");
+      // Move to the middle
+      if (axisX1.positionMM <= ((MAXDISTANCEX / 2) - Tolerance_Distance) && axisX1.positionMM <= ((MAXDISTANCEX / 2) + Tolerance_Distance)) {
+        moveX(POSITIVEDIRECTION, 1, 1000);
+      } else {
+        done = true;
+      }
+      if (axisY.positionMM <= ((MAXDISTANCEY / 2) - Tolerance_Distance) && axisY.positionMM <= ((MAXDISTANCEY / 2) + Tolerance_Distance)) {
+        moveY(POSITIVEDIRECTION, 1, 1000);
+      } else if (done == true) {
+        state = STATE_READY;
+      }
+      break;
+
 
     case STATE_READY:
-      //delay(1000);
-      Serial.println("Helloooooo");
-      while (buttonX1.pressed == false && buttonX2.pressed == false) {
-        moveX(POSITIVEDIRECTION, 1, 1000);
-        //Serial.printf("Rotation X1: %fsteps,\t distance X1: %fmm, Rotation X2: %fsteps,\t distance X2: %fmm\n", axisX1.rotation, axisX1.positionMM, axisX2.rotation, axisX2.positionMM);
-        if (buttonX1.pressed || buttonX2.pressed) {
-          Serial.println("Home X: End-Switch X1 triggered");
-          buttonX1.pressed = false;
-          buttonX2.pressed = false;
-          Serial.printf("Rotation X1: %fsteps,\t distance X1: %fmm, Rotation X2: %fsteps,\t distance X2: %fmm\n", axisX1.rotation, axisX1.positionMM, axisX2.rotation, axisX2.positionMM);
-          state = STATE_CENTER;
-          break;
-        }
-      }
-    case STATE_OFF:
-      while (buttonY.pressed == false) {
-        moveY(POSITIVEDIRECTION, 1, 1000);
-        if (buttonY.pressed) {
-          Serial.println("Home Y: End-Switch Y triggered");
-          buttonY.pressed = false;
-          Serial.printf("Rotation Y: %fsteps,\t distance Y: %fmm\n", axisY.rotation, axisY.positionMM);
-          state = STATE_OFF_BUFFER;
-          break;
-        }
-      };
-    case STATE_OFF_BUFFER:
+      //Serial.println("STATE_READY");
+      delay(1000);
+      Serial.printf("Rotation X1: %fsteps,\t distance X1: %fmm, Rotation X2: %fsteps,\t distance X2: %fmm\n", axisX1.rotation, axisX1.positionMM, axisX2.rotation, axisX2.positionMM);
+      Serial.printf("Rotation Y: %fsteps,\t distance Y: %fmm\n", axisY.rotation, axisY.positionMM);
+      break;
 
-      ;
+    case STATE_OFF:
+      Serial.println("STATE_OFF");
+      break;
+    case STATE_OFF_BUFFER:
+      Serial.println("STATE_OFF_BUFFER");
+      break;
   }
 }
 

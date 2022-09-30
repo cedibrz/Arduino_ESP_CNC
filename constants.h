@@ -44,6 +44,7 @@ const float StepAngle = 1.8;  //In degrees
 const float Rotation = 360;
 const float Full_Rotation = Rotation / StepAngle;  // Number of degrees for one Rotation
 const int Tolerance_Rotation = 3;
+const float Tolerance_Distance = 1;
 
 // Distance travelled
 const float lead = 8;  // mm for full rotation
