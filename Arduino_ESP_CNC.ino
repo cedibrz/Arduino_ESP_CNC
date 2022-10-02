@@ -99,6 +99,9 @@ void loop() {
         Serial.printf("Rotation X1: %fsteps,\t distance X1: %fmm, Rotation X2: %fsteps,\t distance X2: %fmm\n", axisX1.rotation, axisX1.positionMM, axisX2.rotation, axisX2.positionMM);
         Serial.println("Homing Done: ***********************************************************************************************");
         //state = STATE_READY;
+        Serial.printf("Rotation X1: %fsteps,\t distance X1: %fmm, Rotation X2: %fsteps,\t distance X2: %fmm\n", axisX1.rotation, axisX1.positionMM, axisX2.rotation, axisX2.positionMM);
+        Serial.printf("Rotation Y: %fsteps,\t distance Y: %fmm\n", axisY.rotation, axisY.positionMM);
+        delay(5000);
         state = STATE_CENTER;
         speed = 2000;
       };
@@ -216,11 +219,7 @@ void homingX() {
     Serial.println("Home X: _______________________");
     Serial.println("Home X: Homing Succesful");
     axisX1.homed = true;
-    axisX1.rotation = 0;
-    axisX1.positionMM = 0;
     axisX2.homed = true;
-    axisX2.rotation = 0;
-    axisX2.positionMM = 0;
   } else {
     Serial.println("Home X: _______________________");
     Serial.println("Home X: Homing Failed");
@@ -239,6 +238,12 @@ void homingX() {
   // Reset endswitch just to make sure
   buttonX1.pressed = false;
   buttonX2.pressed = false;
+
+  // Set Positions to 0
+  axisX1.rotation = 0;
+  axisX1.positionMM = 0;
+  axisX2.rotation = 0;
+  axisX2.positionMM = 0;
 
   Serial.println("Home X: *********************Homing X-Axis End*********************");
 }
@@ -286,8 +291,6 @@ void homingY() {
     Serial.println("Home Y: _______________________");
     Serial.println("Home Y: Homing Succesful");
     axisY.homed = true;
-    axisY.rotation = 0;
-    axisY.positionMM = 0;
   } else {
     Serial.println("_______________________");
     Serial.println("Home Y: Homing Failed");
@@ -304,6 +307,10 @@ void homingY() {
 
   // Reset endswitch just to make sure
   buttonY.pressed = false;
+
+  // Set Positions to 0
+  axisY.rotation = 0;
+  axisY.positionMM = 0;
 
   Serial.println("Home Y: *********************Homing Y-Axis End*********************");
 }
