@@ -1,6 +1,7 @@
 // Local Library's
 #include "WIFI_Handler.h"
 #include "Stepper_Handler.h"
+#include "File_Reader.h"
 
 // Public Library's
 #include <Arduino.h>
@@ -106,18 +107,12 @@ void loop() {
     case STATE_CENTER:
       Serial.println("STATE_CENTER");
       // Move to the middle
-      if (axisX1.positionMM <= ((MAXDISTANCEX / 2) - Tolerance_Distance) && axisX1.positionMM <= ((MAXDISTANCEX / 2) + Tolerance_Distance)) {
+      for (int i = 1; i <= (MAXROTATIONSX / 2); i++) {
         moveX(POSITIVEDIRECTION, 1, 1000);
-      } else {
-        done = true;
-      }
-      if (axisY.positionMM <= ((MAXDISTANCEY / 2) - Tolerance_Distance) && axisY.positionMM <= ((MAXDISTANCEY / 2) + Tolerance_Distance)) {
         moveY(POSITIVEDIRECTION, 1, 1000);
-      } else if (done == true) {
-        state = STATE_READY;
       }
+      state = STATE_READY;
       break;
-
 
     case STATE_READY:
       //Serial.println("STATE_READY");

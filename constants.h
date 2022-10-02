@@ -54,8 +54,8 @@ const float distancePerSteps = lead / Full_Rotation; // mm/steps
 #define MAXDISTANCEX 260
 #define MAXROTATIONSX 6400
 
-#define MAXDISTANCEY 264
-#define MAXROTATIONSY 6600
+#define MAXDISTANCEY 260
+#define MAXROTATIONSY 6400
 
 // Struct für ISR Button
 struct Button {

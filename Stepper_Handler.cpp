@@ -28,7 +28,7 @@ extern AxisData axisY;
 // Buttons
 extern Button buttonX1;
 extern Button buttonX2;
-extern Button buttonY; 
+extern Button buttonY;
 
 /******************************************************************************
    Functions
@@ -104,22 +104,25 @@ void moveY(bool dir_Clockwise, float distance, int speedikMS) {
   // Configure direction
   if (dir_Clockwise) {
     digitalWrite(dirPinY, HIGH);
-    axisY.positionMM = axisY.positionMM + (distancePerSteps * 1.00);
-    axisY.rotation = axisY.rotation + 1.00;
   } else {
     digitalWrite(dirPinY, LOW);
-    axisY.positionMM = axisY.positionMM - (distancePerSteps * 1.00);
-    axisY.rotation = axisY.rotation - 1.00;
   }
-  
-  if (axisY.positionMM >= MAXDISTANCEY || axisY.rotation >= MAXROTATIONSY) {
-    Serial.println("To Far can't move more Y");
-    buttonY.pressed = true;
-    return;
-  } 
-  
+
   //Run just one Step
   for (int x = 0; x < distance; x++) {
+    if (dir_Clockwise) {
+      axisY.positionMM = axisY.positionMM + (distancePerSteps * 1.00);
+      axisY.rotation = axisY.rotation + 1.00;
+    } else {
+      axisY.positionMM = axisY.positionMM - (distancePerSteps * 1.00);
+      axisY.rotation = axisY.rotation - 1.00;
+    }
+    if (axisY.positionMM >= MAXDISTANCEY || axisY.rotation >= MAXROTATIONSY) {
+      Serial.println("To Far can't move more Y");
+      buttonY.pressed = true;
+      return;
+    }
+
     digitalWrite(stepPinY, HIGH);
     delayMicroseconds(speedikMS);
     digitalWrite(stepPinY, LOW);
