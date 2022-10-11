@@ -34,6 +34,7 @@ loop_state_control state = STATE_INIT;  ///< States variable
 // WIFI
 bool wifiAP_OK;  // Defined in "WIFI_Modul"
 
+float Data[3500][2];
 
 // Interrupt Service Routine ISR
 void ARDUINO_ISR_ATTR isr(void* arg) {

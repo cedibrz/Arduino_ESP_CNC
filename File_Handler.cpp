@@ -29,6 +29,8 @@ String filename = "/Spirale.csv";  ///< File Name
 
 SPIClass spi = SPIClass(VSPI);
 
+extern float Data[3500][2];
+
 /******************************************************************************
    Functions
  *****************************************************************************/
@@ -101,6 +103,11 @@ void removeDir(fs::FS &fs, const char *path) {
 
 void readFile(fs::FS &fs, const char *path) {
   int fileSize = 0;
+  String bufferString;
+  char bufferChar[20];
+  char *split;
+  float x,y;
+
   Serial.printf("Reading file: %s\n", path);
 
   File file = fs.open(path);
@@ -111,9 +118,20 @@ void readFile(fs::FS &fs, const char *path) {
 
   Serial.println("Read from file: ");
   while (file.available()) {
-    Serial.write(file.read());
+    //Serial.write(file.read());
+    bufferString = file.readStringUntil('\n');
+    Serial.println(bufferString);
+    bufferString.toCharArray(bufferChar, 20);
+    split = strtok(bufferChar,";");
+    x = String(split).toFloat();
+    split = strtok(NULL,";");
+    y = String(split).toFloat();
+    Serial.printf("X Value: %f und Y-Value: %f\n",x,y);
+    Data[fileSize][0] = x;
+    Data[fileSize][1] = y;
     fileSize++;
   }
+  Serial.printf("File groesse: %d \n",fileSize);
   file.close();
 }
 
