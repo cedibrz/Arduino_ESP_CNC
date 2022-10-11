@@ -39,6 +39,9 @@ const int stepPinX_2 = 4;     //Z.STEP
 const int dirPinX_2 = 5;      // Z.DIR
 const int endSwitchX_2 = 27;  // End Switch
 
+// SPI Pins
+
+
 // Schritt Winkel
 const float StepAngle = 1.8;  //In degrees
 const float Rotation = 360;
@@ -49,6 +52,12 @@ const float Tolerance_Distance = 1;
 // Distance travelled
 const float lead = 8;  // mm for full rotation
 const float distancePerSteps = lead / Full_Rotation; // mm/steps
+
+// SPI Constants for SD-Module
+#define SCK 25   // 14 oder 18
+#define MISO 26  // 12 oder 19
+#define MOSI 32  // 13 oder 23
+#define CS 33     // 15 oder 5
 
 // Maximal Distance
 #define MAXDISTANCEX 260

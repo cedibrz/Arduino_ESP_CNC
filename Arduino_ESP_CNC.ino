@@ -1,7 +1,7 @@
 // Local Library's
 #include "WIFI_Handler.h"
 #include "Stepper_Handler.h"
-#include "File_Reader.h"
+#include "File_Handler.h"
 
 // Public Library's
 #include <Arduino.h>
@@ -68,6 +68,11 @@ void setup() {
   attachInterruptArg(buttonX1.PIN, isr, &buttonX1, RISING);
   attachInterruptArg(buttonX2.PIN, isr, &buttonX2, RISING);
   attachInterruptArg(buttonY.PIN, isr, &buttonY, RISING);
+
+  Serial.println("MOUNTING SD-Card Module - Start");
+  setupSD();
+  readFile(SD, "/Spirale.csv");
+  Serial.println("MOUNTING SD-Card Module - End");
 }
 
 void loop() {
