@@ -29,7 +29,8 @@ String filename = "/Spirale.csv";  ///< File Name
 
 SPIClass spi = SPIClass(VSPI);
 
-extern float Data[3500][2];
+extern float Data[3500][6];
+extern int fileSize;
 
 /******************************************************************************
    Functions
@@ -102,11 +103,10 @@ void removeDir(fs::FS &fs, const char *path) {
 }
 
 void readFile(fs::FS &fs, const char *path) {
-  int fileSize = 0;
   String bufferString;
   char bufferChar[20];
   char *split;
-  float x,y;
+  float x, y;
 
   Serial.printf("Reading file: %s\n", path);
 
@@ -122,17 +122,36 @@ void readFile(fs::FS &fs, const char *path) {
     bufferString = file.readStringUntil('\n');
     Serial.println(bufferString);
     bufferString.toCharArray(bufferChar, 20);
-    split = strtok(bufferChar,";");
+    split = strtok(bufferChar, ";");
     x = String(split).toFloat();
-    split = strtok(NULL,";");
+    split = strtok(NULL, ";");
     y = String(split).toFloat();
-    Serial.printf("X Value: %f und Y-Value: %f\n",x,y);
-    Data[fileSize][0] = x;
-    Data[fileSize][1] = y;
+    Serial.printf("X Value: %f und Y-Value: %f\n", x, y);
+    Data[fileSize][XDIST] = x;
+    Data[fileSize][YDIST] = y;
     fileSize++;
   }
-  Serial.printf("File groesse: %d \n",fileSize);
+  Serial.printf("File groesse: %d \n", fileSize);
   file.close();
+
+  // Convert that shit to number of rotations
+  for (int i = 0; i < fileSize - 1; i++) {
+    Data[i][XROT] = (Data[i + 1][XDIST] - Data[i][XDIST]) / distancePerSteps;
+    if(Data[i][XROT] < 0) {
+      Data[i][XROT] = Data[i][XROT] * (-1);
+      Data[i][XDIR] = NEGATIVEDIRECTION;
+    }else{
+      Data[i][XDIR] = POSITIVEDIRECTION;
+    }
+    Data[i][YROT] = (Data[i + 1][YDIST] - Data[i][YDIST]) / distancePerSteps;
+    if(Data[i][YROT] < 0) {
+      Data[i][YROT] = Data[i][YROT] * (-1);
+      Data[i][YDIR] = NEGATIVEDIRECTION;
+    }else{
+      Data[i][YDIR] = POSITIVEDIRECTION;
+    }
+    Serial.printf("X-Rotation: %f, X-Direction: %f und Y-Rotation: %f, Y-Direction: %f\n", Data[i][XROT],Data[i][XDIR],Data[i][YROT],Data[i][YDIR]);
+  }
 }
 
 void writeFile(fs::FS &fs, const char *path, const char *message) {

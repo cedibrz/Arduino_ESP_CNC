@@ -25,8 +25,6 @@ extern const int dirPinY; // Y.DIR
 extern const int stepPinX_2; //Z.STEP
 extern const int dirPinX_2; // Z.DIR
 
-#define POSITIVEDIRECTION 1
-#define NEGATIVEDIRECTION 0
 
 /******************************************************************************
    Functions

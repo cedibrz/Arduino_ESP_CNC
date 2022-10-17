@@ -27,17 +27,17 @@
 // End-Switch Motor X1
 const int stepPinX_1 = 17;    //X.STEP
 const int dirPinX_1 = 19;     // X.DIR
-const int endSwitchX_1 = 25;  // End Switch
+const int endSwitchX_1 = 12;  // End Switch
 
 // End-Switch Motor Y
 const int stepPinY = 16;      //Y.STEP
 const int dirPinY = 18;       // Y.DIR
-const int endSwitchY_1 = 26;  // End Switch
+const int endSwitchY_1 = 14;  // End Switch
 
 // End-Switch Motor X2
 const int stepPinX_2 = 4;     //Z.STEP
 const int dirPinX_2 = 5;      // Z.DIR
-const int endSwitchX_2 = 27;  // End Switch
+const int endSwitchX_2 = 13;  // End Switch
 
 // SPI Pins
 
@@ -57,7 +57,15 @@ const float distancePerSteps = lead / Full_Rotation; // mm/steps
 #define SCK 25   // 14 oder 18
 #define MISO 26  // 12 oder 19
 #define MOSI 32  // 13 oder 23
-#define CS 33     // 15 oder 5
+#define CS 23     // 15 oder 5
+
+// Indizes for array spalten
+#define XDIST 0
+#define YDIST 1
+#define XROT 2
+#define YROT 3
+#define XDIR 4
+#define YDIR 5
 
 // Maximal Distance
 #define MAXDISTANCEX 260
@@ -65,6 +73,9 @@ const float distancePerSteps = lead / Full_Rotation; // mm/steps
 
 #define MAXDISTANCEY 260
 #define MAXROTATIONSY 6400
+
+#define POSITIVEDIRECTION 1
+#define NEGATIVEDIRECTION 0
 
 // Struct für ISR Button
 struct Button {
@@ -89,7 +100,8 @@ typedef enum {
   STATE_READY,
   STATE_CENTER,
   STATE_OFF,
-  STATE_OFF_BUFFER
+  STATE_OFF_BUFFER,
+  STATE_FIGURE
 } loop_state_control;  ///< States of the main state machine
 
 

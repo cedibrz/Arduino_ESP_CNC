@@ -34,7 +34,8 @@ loop_state_control state = STATE_INIT;  ///< States variable
 // WIFI
 bool wifiAP_OK;  // Defined in "WIFI_Modul"
 
-float Data[3500][2];
+float Data[3500][6];
+int fileSize = 0;
 
 // Interrupt Service Routine ISR
 void ARDUINO_ISR_ATTR isr(void* arg) {
@@ -77,6 +78,9 @@ void setup() {
 }
 
 void loop() {
+  //state = STATE_OFF_BUFFER;
+  //debugEndSwitches();
+  delay(2000);
   bool done = false;
   switch (state) {
     case STATE_INIT:
@@ -128,6 +132,7 @@ void loop() {
       delay(1000);
       Serial.printf("Rotation X1: %fsteps,\t distance X1: %fmm, Rotation X2: %fsteps,\t distance X2: %fmm\n", axisX1.rotation, axisX1.positionMM, axisX2.rotation, axisX2.positionMM);
       Serial.printf("Rotation Y: %fsteps,\t distance Y: %fmm\n", axisY.rotation, axisY.positionMM);
+      state = STATE_FIGURE;
       break;
 
     case STATE_OFF:
@@ -135,6 +140,27 @@ void loop() {
       break;
     case STATE_OFF_BUFFER:
       Serial.println("STATE_OFF_BUFFER");
+      break;
+
+    case STATE_FIGURE:
+      Serial.println("STATE_FIGURE");
+      int position = 0;
+      int counter = 0;
+      while (position < fileSize) {
+        while (counter < Data[position][XROT] || counter < Data[position][YROT]) {
+          if (Data[position][XROT] < counter) {
+            moveX(Data[position][XDIR], 1, 1000);
+            Serial.println("Moving X");
+          }
+          if (Data[position][YROT] < counter) {
+            moveY(Data[position][YDIR], 1, 1000);
+            Serial.println("Moving Y");
+          }
+          counter++;
+        }
+        counter = 0;
+        position++;
+      }
       break;
   }
 }
@@ -146,7 +172,7 @@ void homingX() {
   speed = 1500;
 
   // First drive a little in Positive direction in case its already homed
-  Serial.println("Home X: *********************Homing Y-Axis Start*********************");
+  Serial.println("Home X: *********************Homing X-Axis Start*********************");
   moveX(POSITIVEDIRECTION, steps, speed);  // driver one Rotation forward
   delay(500);                              // Short break
 
