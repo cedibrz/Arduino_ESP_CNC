@@ -73,7 +73,8 @@ void setup() {
 
   Serial.println("MOUNTING SD-Card Module - Start");
   setupSD();
-  readFile(SD, "/Spirale.csv");
+  //readFile(SD, "/Spirale.csv");
+  readFile(SD, "/Test.csv");
   Serial.println("MOUNTING SD-Card Module - End");
 }
 
